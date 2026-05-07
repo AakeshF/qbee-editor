@@ -86,7 +86,12 @@ class QBeeChatView extends ViewPane {
 		const settingAuth = this.configurationService.getValue<string>(QBEE_CONFIG_WORKER_AUTH);
 		const workerUrl = (envWorkerUrl || settingWorkerUrl || QBEE_DEFAULT_WORKER_URL).replace(/\/$/, '');
 		const auth = envAuth || settingAuth || QBEE_DEFAULT_AUTH;
-		const spaUrl = `${workerUrl}/#auth=${encodeURIComponent(auth)}`;
+		// Pass the open workspace folder to the SPA so it can target RAG/agent calls
+		// at the right tree without hardcoding paths. Falls back to "" when no folder is open.
+		const folders = this.contextService.getWorkspace().folders;
+		const workspaceRoot = folders[0]?.uri.fsPath ?? '';
+		const fragment = new URLSearchParams({ auth, workspaceRoot }).toString();
+		const spaUrl = `${workerUrl}/#${fragment}`;
 		const workerPort = this.parsePort(workerUrl);
 
 		const webview = this.webviewService.createWebviewElement({
