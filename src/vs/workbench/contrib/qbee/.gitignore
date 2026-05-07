@@ -1,0 +1,3 @@
+# Vendored SPA build output. Regenerated from spa/dist by scripts/vendor-spa.sh
+# during `pnpm -w build`. Don't commit; the build pipeline rebuilds it.
+spa-dist/

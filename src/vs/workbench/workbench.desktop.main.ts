@@ -196,6 +196,9 @@ import './contrib/policyExport/electron-browser/policyExport.contribution.js';
 // Keybindings Export
 import './contrib/keybindingsExport/electron-browser/keybindingsExport.contribution.js';
 
+// QBee (fork-only contribution — all AI features hang off this entry)
+import './contrib/qbee/browser/qbee.contribution.js';
+
 //#endregion
 
 
