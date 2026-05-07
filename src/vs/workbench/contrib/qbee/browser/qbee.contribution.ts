@@ -6,6 +6,10 @@
 // QBee fork — fork-only contribution. All AI features hang off this entry point.
 // Phase 3: inline FIM completions register themselves on import.
 import './inlineCompletionProvider.js';
+// Phase 6/v0.2.0: in-app updater (Check for Updates command + background check).
+import { QBeeUpdateCheckOnStartup } from './updater.js';
+
+import { registerWorkbenchContribution2, WorkbenchPhase } from '../../../common/contributions.js';
 
 import { localize, localize2 } from '../../../../nls.js';
 import { Registry } from '../../../../platform/registry/common/platform.js';
@@ -174,3 +178,6 @@ const chatView: IViewDescriptor = {
 };
 
 Registry.as<IViewsRegistry>(ViewContainerExtensions.ViewsRegistry).registerViews([chatView], viewContainer);
+
+// Background update-check: runs once at workbench restore.
+registerWorkbenchContribution2(QBeeUpdateCheckOnStartup.ID, QBeeUpdateCheckOnStartup, WorkbenchPhase.Eventually);
