@@ -12,10 +12,15 @@ import { IBulkEditService, ResourceFileEdit, ResourceTextEdit } from '../../../.
 import { IFileService } from '../../../../platform/files/common/files.js';
 import { IWorkspaceContextService } from '../../../../platform/workspace/common/workspace.js';
 import { VSBuffer } from '../../../../base/common/buffer.js';
+import { CheckpointStore } from './checkpointStore.js';
 
 export type ApplyEditRequest = {
 	type: 'apply_edit';
 	requestId: string;
+	// Optional. SPA Agent.tsx generates one id per `run()` call so all diffs
+	// from the same run share a checkpoint. Absent for older SPA builds — we
+	// fall back to a synthetic per-apply id then.
+	runId?: string;
 	path: string;
 	oldContent: string;
 	newContent: string;
@@ -29,11 +34,15 @@ export type ApplyEditResponse = {
 };
 
 export class EditApplier {
+	private readonly checkpointStore: CheckpointStore;
+
 	constructor(
 		private readonly bulkEditService: IBulkEditService,
 		private readonly fileService: IFileService,
 		private readonly contextService: IWorkspaceContextService,
-	) {}
+	) {
+		this.checkpointStore = new CheckpointStore(fileService);
+	}
 
 	async apply(req: ApplyEditRequest): Promise<ApplyEditResponse> {
 		const folder = this.contextService.getWorkspace().folders[0];
@@ -49,6 +58,15 @@ export class EditApplier {
 		}
 
 		try {
+			// Record the pre-edit state so the user can undo this run later.
+			// Best-effort: a checkpoint write failure shouldn't block the edit.
+			const runId = req.runId ?? `run-${req.requestId}`;
+			try {
+				await this.checkpointStore.recordPreState(folder.uri, runId, req.path, target);
+			} catch (err) {
+				console.warn('[qbee] checkpoint failed:', (err as Error).message);
+			}
+
 			const exists = await this.fileService.exists(target);
 			const edits: (ResourceTextEdit | ResourceFileEdit)[] = [];
 

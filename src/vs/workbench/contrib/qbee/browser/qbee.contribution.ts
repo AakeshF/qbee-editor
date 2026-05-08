@@ -11,6 +11,10 @@ import { QBeeUpdateCheckOnStartup } from './updater.js';
 // v0.5: open the QBee panel on first launch so the dashboard is the visible
 // identity of the editor instead of a hidden sidebar.
 import { QBeeFirstRunOpener } from './firstRunOpener.js';
+// v0.5: undo last agent run by restoring from .qbee/checkpoints/.
+import { registerUndoLastAgentRun } from './undoLastRun.js';
+
+registerUndoLastAgentRun();
 
 import { registerWorkbenchContribution2, WorkbenchPhase } from '../../../common/contributions.js';
 
