@@ -595,6 +595,10 @@
 			"project": "vscode-workbench"
 		},
 		{
+			"name": "vs/workbench/contrib/qbee",
+			"project": "vscode-workbench"
+		},
+		{
 			"name": "vs/workbench/contrib/meteredConnection",
 			"project": "vscode-workbench"
 		},

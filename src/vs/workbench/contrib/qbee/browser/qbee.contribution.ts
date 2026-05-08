@@ -34,6 +34,7 @@ import { IBulkEditService } from '../../../../editor/browser/services/bulkEditSe
 import { IFileService } from '../../../../platform/files/common/files.js';
 import { IWorkspaceContextService } from '../../../../platform/workspace/common/workspace.js';
 import { EditApplier, type ApplyEditRequest } from './editApplier.js';
+import { EditorContextBridge } from './editorContextBridge.js';
 
 const QBEE_VIEW_CONTAINER_ID = 'workbench.view.qbee';
 const QBEE_CHAT_VIEW_ID = 'workbench.view.qbee.chat';
@@ -147,6 +148,14 @@ class QBeeChatView extends ViewPane {
 			const response = await editApplier.apply(msg as ApplyEditRequest);
 			webview.postMessage(response);
 		}));
+
+		// Push editor state (active file, selection, open tabs) into the SPA so the
+		// chat/agent know what the user is looking at without typing @file: mentions.
+		this._register(this.instantiationService.createInstance(
+			EditorContextBridge,
+			(message: object) => { webview.postMessage(message); },
+			workspaceRoot,
+		));
 
 		webview.mountTo(container, getWindow(container));
 	}
