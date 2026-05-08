@@ -38,6 +38,7 @@ import { IFileService } from '../../../../platform/files/common/files.js';
 import { IWorkspaceContextService } from '../../../../platform/workspace/common/workspace.js';
 import { EditApplier, type ApplyEditRequest } from './editApplier.js';
 import { EditorContextBridge } from './editorContextBridge.js';
+import { SettingsBridge } from './settingsBridge.js';
 
 const QBEE_VIEW_CONTAINER_ID = 'workbench.view.qbee';
 const QBEE_CHAT_VIEW_ID = 'workbench.view.qbee.chat';
@@ -143,13 +144,27 @@ class QBeeChatView extends ViewPane {
 
 		const editApplier = new EditApplier(this.bulkEditService, this.fileService, this.contextService);
 
+		// SettingsBridge lets the SPA read/write VSCode settings (whitelisted to
+		// qbee.* keys) — used by the dashboard's editable FIM section.
+		const settingsBridge = this._register(this.instantiationService.createInstance(
+			SettingsBridge,
+			(message: object) => { webview.postMessage(message); },
+		));
+
 		this._register(webview.onMessage(async (e) => {
 			const msg = e.message as { type?: string };
-			if (!msg || msg.type !== 'apply_edit') {
+			if (!msg) {
 				return;
 			}
-			const response = await editApplier.apply(msg as ApplyEditRequest);
-			webview.postMessage(response);
+			if (msg.type === 'apply_edit') {
+				const response = await editApplier.apply(msg as ApplyEditRequest);
+				webview.postMessage(response);
+				return;
+			}
+			// Settings bridge handles get_setting / set_setting.
+			if (await settingsBridge.handle(msg)) {
+				return;
+			}
 		}));
 
 		// Push editor state (active file, selection, open tabs) into the SPA so the
