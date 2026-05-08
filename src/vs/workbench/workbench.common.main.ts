@@ -217,12 +217,17 @@ import './contrib/notebook/browser/notebook.contribution.js';
 import './contrib/speech/browser/speech.contribution.js';
 
 // Chat
+// QBee fork: chat.contribution stays loaded — many other contribs import
+// from it. The view container that surfaced as the Copilot-branded "Chat"
+// panel is suppressed inside chatParticipant.contribution.ts. The
+// agent-plugins / chat-sessions / inline-chat UI surfaces below are NOT
+// imported, so their views never register.
 import './contrib/chat/browser/chat.contribution.js';
-import './contrib/chat/browser/chat.view.contribution.js';
-import './contrib/inlineChat/browser/inlineChat.contribution.js';
+// import './contrib/chat/browser/chat.view.contribution.js';            // QBee: agent plugins view
+// import './contrib/inlineChat/browser/inlineChat.contribution.js';     // QBee: Cmd+I inline chat (defer to v0.7 native chrome)
 import './contrib/mcp/browser/mcp.contribution.js';
 import './contrib/mcp/browser/mcp.view.contribution.js';
-import './contrib/chat/browser/chatSessions/chatSessions.contribution.js';
+// import './contrib/chat/browser/chatSessions/chatSessions.contribution.js';  // QBee: chat history sessions
 import './contrib/chat/browser/contextContrib/chatContext.contribution.js';
 import './contrib/imageCarousel/browser/imageCarousel.contribution.js';
 
@@ -372,13 +377,16 @@ import './contrib/surveys/browser/languageSurveys.contribution.js';
 
 // Welcome
 import './contrib/welcomeGettingStarted/browser/gettingStarted.contribution.js';
-import './contrib/welcomeAgentSessions/browser/agentSessionsWelcome.contribution.js';
+// QBee: agentSessionsWelcome registers a Copilot-branded "Sign in to GitHub Copilot" landing page; suppressed.
+// import './contrib/welcomeAgentSessions/browser/agentSessionsWelcome.contribution.js';
 import './contrib/welcomeWalkthrough/browser/walkThrough.contribution.js';
 import './contrib/welcomeViews/common/viewsWelcome.contribution.js';
 import './contrib/welcomeViews/common/newFile.contribution.js';
 
 // Welcome Onboarding
-import './contrib/welcomeOnboarding/browser/welcomeOnboarding.contribution.js';
+// QBee: welcomeOnboarding is the multi-step Copilot signup wizard; suppressed.
+// QBee's own first-run dashboard takes its place (contrib/qbee/firstRunOpener.ts).
+// import './contrib/welcomeOnboarding/browser/welcomeOnboarding.contribution.js';
 
 // Call Hierarchy
 import './contrib/callHierarchy/browser/callHierarchy.contribution.js';

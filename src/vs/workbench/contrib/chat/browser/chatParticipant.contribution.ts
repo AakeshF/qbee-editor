@@ -33,54 +33,18 @@ import { ChatAgentLocation, ChatModeKind } from '../common/constants.js';
 import { ChatViewId, ChatViewContainerId } from './chat.js';
 import { ChatViewPane } from './widgetHosts/viewPane/chatViewPane.js';
 
-// --- Chat Container &  View Registration
-
-const chatViewIcon = registerIcon('chat-view-icon', Codicon.chatSparkle, localize('chatViewIcon', 'View icon of the chat view.'));
-
-const chatViewContainer: ViewContainer = Registry.as<IViewContainersRegistry>(ViewExtensions.ViewContainersRegistry).registerViewContainer({
-	id: ChatViewContainerId,
-	title: localize2('chat.viewContainer.label', "Chat"),
-	icon: chatViewIcon,
-	ctorDescriptor: new SyncDescriptor(ViewPaneContainer, [ChatViewContainerId, { mergeViewWithContainerWhenSingleView: true }]),
-	storageId: ChatViewContainerId,
-	hideIfEmpty: true,
-	order: 1,
-}, ViewContainerLocation.AuxiliaryBar, { isDefault: true, doNotRegisterOpenCommand: true });
-
-const chatViewDescriptor: IViewDescriptor = {
-	id: ChatViewId,
-	containerIcon: chatViewContainer.icon,
-	containerTitle: chatViewContainer.title.value,
-	singleViewPaneContainerTitle: chatViewContainer.title.value,
-	name: localize2('chat.viewContainer.label', "Chat"),
-	canToggleVisibility: false,
-	canMoveView: true,
-	openCommandActionDescriptor: {
-		id: ChatViewContainerId,
-		title: chatViewContainer.title,
-		mnemonicTitle: localize({ key: 'miToggleChat', comment: ['&& denotes a mnemonic'] }, "&&Chat"),
-		keybindings: {
-			primary: KeyMod.CtrlCmd | KeyMod.Alt | KeyCode.KeyI,
-			mac: {
-				primary: KeyMod.CtrlCmd | KeyMod.WinCtrl | KeyCode.KeyI
-			}
-		},
-		order: 1
-	},
-	ctorDescriptor: new SyncDescriptor(ChatViewPane),
-	when: ContextKeyExpr.and(
-		ChatContextKeys.accountPolicyGateActive.negate(),
-		ContextKeyExpr.or(
-			ContextKeyExpr.and(
-				ChatContextKeys.Setup.hidden.negate(),
-				ChatContextKeys.Setup.disabledInWorkspace.negate(),
-			),
-			ChatContextKeys.panelParticipantRegistered,
-			ChatContextKeys.extensionInvalid
-		)
-	)
-};
-Registry.as<IViewsRegistry>(ViewExtensions.ViewsRegistry).registerViews([chatViewDescriptor], chatViewContainer);
+// --- Chat Container & View Registration
+//
+// QBee fork: the upstream Copilot 'Chat' view container + view are not
+// registered. QBee ships its own AI panel under contrib/qbee/ which is the
+// only chat / agent surface in this build. The classes exported below
+// (ChatCompatibilityNotifier, ChatExtensionPointHandler) are still imported
+// from chat.contribution.ts and continue to work; they don't depend on the
+// view container existing.
+//
+// Original block removed: registerViewContainer({ id: ChatViewContainerId,
+// title: 'Chat', ... }) at AuxiliaryBar, plus its companion view descriptor
+// + extensionsRegistry registration of the chat participant extension point.
 
 const chatParticipantExtensionPoint = extensionsRegistry.ExtensionsRegistry.registerExtensionPoint<IRawChatParticipantContribution[]>({
 	extensionPoint: 'chatParticipants',
