@@ -107,9 +107,15 @@
 		"manageOverageUrl": "",
 		"upgradePlanUrl": "",
 		"signUpUrl": "",
+		"provider": {
+			"default": { "id": "qbee", "name": "QBee" },
+			"enterprise": { "id": "qbee-enterprise", "name": "QBee Enterprise" },
+			"google": { "id": "google", "name": "Google" },
+			"apple": { "id": "apple", "name": "Apple" }
+		},
 		"providerExtensionId": "qbee.unused",
 		"providerUriSetting": "",
-		"providerScopes": [],
+		"providerScopes": [["read:user"], ["user:email"], ["read:user"]],
 		"entitlementUrl": "",
 		"entitlementSignupLimitedUrl": "",
 		"chatQuotaExceededContext": "qbee.chat.quotaExceeded",
