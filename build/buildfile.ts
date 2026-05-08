@@ -28,11 +28,16 @@ export const workbenchDesktop = [
 	createModuleDescription('vs/platform/agentHost/node/diffWorkerMain'),
 	createModuleDescription('vs/workbench/api/node/extensionHostProcess'),
 	createModuleDescription('vs/workbench/workbench.desktop.main'),
-	createModuleDescription('vs/sessions/sessions.desktop.main')
+	// QBee: agent sessions window removed (see vs/sessions/ writeup in commit history)
+	// createModuleDescription('vs/sessions/sessions.desktop.main')
 ];
 
 export const workbenchWeb = createModuleDescription('vs/workbench/workbench.web.main.internal');
 
+// QBee: sessionsWeb is kept defined because gulpfile.vscode.web.ts + mangle/
+// reference it via the buildfile object. The output is a web target we don't
+// ship, so it's harmless dead bundling. The desktop sessions window IS
+// disabled — see the commented-out entries in workers and code above.
 export const sessionsWeb = createModuleDescription('vs/sessions/sessions.web.main.internal');
 
 export const keyboardMaps = [
@@ -47,7 +52,8 @@ export const code = [
 	createModuleDescription('vs/code/node/cliProcessMain'),
 	createModuleDescription('vs/code/electron-utility/sharedProcess/sharedProcessMain'),
 	createModuleDescription('vs/code/electron-browser/workbench/workbench'),
-	createModuleDescription('vs/sessions/electron-browser/sessions'),
+	// QBee: sessions window removed (see commit hard-disabling Microsoft Agent Sessions Window)
+	// createModuleDescription('vs/sessions/electron-browser/sessions'),
 ];
 
 export const codeWeb = createModuleDescription('vs/code/browser/workbench/workbench');

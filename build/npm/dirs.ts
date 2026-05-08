@@ -23,8 +23,11 @@ export const dirs = [
 	'extensions/extension-editing',
 	'extensions/git',
 	'extensions/git-base',
-	'extensions/github',
-	'extensions/github-authentication',
+	// QBee fork: extensions/github, extensions/github-authentication, and
+	// extensions/microsoft-authentication are removed. Users do git via OS-level
+	// credentials/SSH; QBee doesn't bundle Microsoft OAuth surfaces.
+	// 'extensions/github',
+	// 'extensions/github-authentication',
 	'extensions/grunt',
 	'extensions/gulp',
 	'extensions/html-language-features',
@@ -38,7 +41,7 @@ export const dirs = [
 	'extensions/media-preview',
 	'extensions/merge-conflict',
 	'extensions/mermaid-chat-features',
-	'extensions/microsoft-authentication',
+	// 'extensions/microsoft-authentication',  // QBee: removed (see top of file)
 	'extensions/notebook-renderers',
 	'extensions/npm',
 	'extensions/php-language-features',

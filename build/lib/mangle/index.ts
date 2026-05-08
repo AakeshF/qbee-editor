@@ -331,10 +331,9 @@ const skippedExportMangledProjects = [
 	// Test projects
 	'vscode-api-tests',
 
-	// These projects use webpack to dynamically rewrite imports, which messes up our mangling
+	// These projects use webpack to dynamically rewrite imports, which messes up our mangling.
+	// QBee: github-authentication + microsoft-authentication extensions are removed.
 	'configuration-editing',
-	'microsoft-authentication',
-	'github-authentication',
 	'html-language-features/server',
 ];
 

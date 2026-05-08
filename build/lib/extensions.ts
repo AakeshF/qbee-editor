@@ -313,7 +313,7 @@ export function fromGithub({ name, version, repo, sha256, metadata }: IExtension
  */
 const nativeExtensions = [
 	'git',
-	'microsoft-authentication',
+	// QBee: 'microsoft-authentication' removed (extension itself deleted)
 ];
 
 const excludedExtensions = [

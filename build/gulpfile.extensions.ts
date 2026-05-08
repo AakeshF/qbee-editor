@@ -63,8 +63,9 @@ const compilations = [
 	'extensions/extension-editing/tsconfig.json',
 	'extensions/git/tsconfig.json',
 	'extensions/git-base/tsconfig.json',
-	'extensions/github/tsconfig.json',
-	'extensions/github-authentication/tsconfig.json',
+	// QBee: github + github-authentication + microsoft-authentication extensions removed.
+	// 'extensions/github/tsconfig.json',
+	// 'extensions/github-authentication/tsconfig.json',
 	'extensions/grunt/tsconfig.json',
 	'extensions/gulp/tsconfig.json',
 	'extensions/html-language-features/client/tsconfig.json',
@@ -79,7 +80,7 @@ const compilations = [
 	'extensions/merge-conflict/tsconfig.json',
 	'extensions/mermaid-chat-features/tsconfig.json',
 	'extensions/terminal-suggest/tsconfig.json',
-	'extensions/microsoft-authentication/tsconfig.json',
+	// 'extensions/microsoft-authentication/tsconfig.json',  // QBee: removed
 	'extensions/notebook-renderers/tsconfig.json',
 	'extensions/npm/tsconfig.json',
 	'extensions/php-language-features/tsconfig.json',
