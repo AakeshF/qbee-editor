@@ -8,6 +8,9 @@
 import './inlineCompletionProvider.js';
 // Phase 6/v0.2.0: in-app updater (Check for Updates command + background check).
 import { QBeeUpdateCheckOnStartup } from './updater.js';
+// v0.5: open the QBee panel on first launch so the dashboard is the visible
+// identity of the editor instead of a hidden sidebar.
+import { QBeeFirstRunOpener } from './firstRunOpener.js';
 
 import { registerWorkbenchContribution2, WorkbenchPhase } from '../../../common/contributions.js';
 
@@ -195,3 +198,7 @@ Registry.as<IViewsRegistry>(ViewContainerExtensions.ViewsRegistry).registerViews
 
 // Background update-check: runs once at workbench restore.
 registerWorkbenchContribution2(QBeeUpdateCheckOnStartup.ID, QBeeUpdateCheckOnStartup, WorkbenchPhase.Eventually);
+
+// First-launch opener: opens the QBee panel the first time the user launches
+// QBee on this profile. Subsequent launches do nothing.
+registerWorkbenchContribution2(QBeeFirstRunOpener.ID, QBeeFirstRunOpener, WorkbenchPhase.AfterRestored);
