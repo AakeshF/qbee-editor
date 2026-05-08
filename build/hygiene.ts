@@ -28,17 +28,12 @@ interface VinylFileWithLines extends VinylFile {
 }
 
 /**
- * Checks that engines.vscode in extensions/copilot/package.json matches ^{version} from the root package.json.
- * Returns an error message if mismatched, or undefined if OK.
+ * QBee fork: extensions/copilot/ has been removed. The original upstream
+ * check enforced a version match between the root package.json and the
+ * bundled Copilot Chat extension's engines.vscode. With the extension gone
+ * there's nothing to validate, so this is a no-op in QBee.
  */
-export function checkCopilotEnginesVersion(repoRoot: string): string | undefined {
-	const rootPkg = JSON.parse(fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf8'));
-	const copilotPkg = JSON.parse(fs.readFileSync(path.join(repoRoot, 'extensions/copilot/package.json'), 'utf8'));
-	const expected = `^${rootPkg.version}`;
-	const actual = copilotPkg?.engines?.vscode;
-	if (actual !== expected) {
-		return `engines.vscode in 'extensions/copilot/package.json' must be "${expected}" (the version from the root package.json), but found "${actual ?? '<missing>'}"`;
-	}
+export function checkCopilotEnginesVersion(_repoRoot: string): string | undefined {
 	return undefined;
 }
 
