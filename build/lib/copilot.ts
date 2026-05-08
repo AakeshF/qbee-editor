@@ -79,32 +79,14 @@ export function getCopilotExcludeFilter(platform: string, arch: string): string[
  * Failures throw to fail the build because built-in packaging must guarantee
  * this artifact is present.
  */
-export function prepareBuiltInCopilotRipgrepShim(platform: string, arch: string, builtInCopilotExtensionDir: string, appNodeModulesDir: string): void {
+export function prepareBuiltInCopilotRipgrepShim(platform: string, arch: string, builtInCopilotExtensionDir: string, _appNodeModulesDir: string): void {
+	// QBee fork: extensions/copilot/ has been removed, so the SDK directory the
+	// upstream shim materializes ripgrep into doesn't exist. No-op cleanly so
+	// gulp packaging proceeds.
 	const { nodePlatform, nodeArch } = toNodePlatformArch(platform, arch);
-	const platformArch = `${nodePlatform}-${nodeArch}`;
-
-	const extensionNodeModules = path.join(builtInCopilotExtensionDir, 'node_modules');
-	const copilotBase = path.join(extensionNodeModules, '@github', 'copilot');
-	const copilotSdkBase = path.join(copilotBase, 'sdk');
-	if (!fs.existsSync(copilotSdkBase)) {
-		throw new Error(`[prepareBuiltInCopilotRipgrepShim] Copilot SDK directory not found at ${copilotSdkBase}`);
+	const copilotBase = path.join(builtInCopilotExtensionDir, 'node_modules', '@github', 'copilot');
+	if (!fs.existsSync(copilotBase)) {
+		return;
 	}
-
-	const ripgrepSource = path.join(appNodeModulesDir, '@vscode', 'ripgrep', 'bin');
-	if (!fs.existsSync(ripgrepSource)) {
-		throw new Error(`[prepareBuiltInCopilotRipgrepShim] ripgrep source not found at ${ripgrepSource}`);
-	}
-
-	const ripgrepDest = path.join(copilotSdkBase, 'ripgrep', 'bin', platformArch);
-	const shimMarkerPath = path.join(copilotBase, 'shims.txt');
-
-	try {
-		fs.mkdirSync(ripgrepDest, { recursive: true });
-		fs.cpSync(ripgrepSource, ripgrepDest, { recursive: true });
-
-		fs.writeFileSync(shimMarkerPath, 'Shims created successfully');
-		console.log(`[prepareBuiltInCopilotRipgrepShim] Materialized ripgrep shim for ${platformArch} in ${builtInCopilotExtensionDir}`);
-	} catch (err) {
-		throw new Error(`[prepareBuiltInCopilotRipgrepShim] Failed to materialize ripgrep shim for ${platformArch}: ${err}`);
-	}
+	console.log(`[prepareBuiltInCopilotRipgrepShim] copilot SDK absent — skipping ripgrep shim for ${nodePlatform}-${nodeArch}`);
 }
