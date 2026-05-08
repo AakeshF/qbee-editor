@@ -205,5 +205,6 @@
 			"themeId": "Solarized Light",
 			"type": "light"
 		}
-	]
+	],
+	"builtInExtensionsEnabledWithAutoUpdates": []
 }
