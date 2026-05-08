@@ -306,29 +306,12 @@ export class WindowsMainService extends Disposable implements IWindowsMainServic
 		return windows;
 	}
 
-	private async ensureAgentsWindow(openConfig: IOpenConfiguration): Promise<IOpenConfiguration> {
-		const agentSessionsWorkspaceUri = this.environmentMainService.agentSessionsWorkspace;
-		if (!agentSessionsWorkspaceUri) {
-			throw new Error('Agents workspace is not configured');
-		}
-
-		// Ensure the workspace file exists
-		const workspaceExists = await this.fileService.exists(agentSessionsWorkspaceUri);
-		if (!workspaceExists) {
-			const emptyWorkspaceContent = JSON.stringify({ folders: [] }, null, '\t');
-			await this.fileService.writeFile(agentSessionsWorkspaceUri, VSBuffer.fromString(emptyWorkspaceContent));
-		}
-
-		return {
-			urisToOpen: [{ workspaceUri: agentSessionsWorkspaceUri }],
-			userEnv: openConfig.userEnv,
-			cli: openConfig.cli,
-			noRecentEntry: true,
-			context: openConfig.context,
-			contextWindowId: openConfig.contextWindowId,
-			initialStartup: openConfig.initialStartup,
-			forceNewWindow: true,
-		};
+	private async ensureAgentsWindow(_openConfig: IOpenConfiguration): Promise<IOpenConfiguration> {
+		// QBee fork: the Microsoft "Agent Sessions Window" is removed. Any
+		// upstream command that calls this path gets a no-op error so the
+		// caller can decide to ignore — better than silently opening an
+		// uninitialised workbench window.
+		throw new Error('QBee: agent sessions window is disabled. The QBee panel under the main workbench is the agent surface.');
 	}
 
 	async open(openConfig: IOpenConfiguration): Promise<ICodeWindow[]> {
@@ -1606,7 +1589,12 @@ export class WindowsMainService extends Disposable implements IWindowsMainServic
 
 			cssModules: this.cssDevelopmentService.isEnabled ? await this.cssDevelopmentService.getCssModules() : undefined,
 
-			isSessionsWindow: isWorkspaceIdentifier(options.workspace) && isEqual(options.workspace.configPath, this.environmentMainService.agentSessionsWorkspace),
+			// QBee fork: the Microsoft "Agent Sessions Window" (vs/sessions/) is
+			// hard-disabled. We don't ship that surface — QBee has its own
+			// agent panel under contrib/qbee/ in the main workbench. Even if
+			// some upstream command tries to open the sessions workspace, the
+			// flag stays false so windowImpl.ts loads the regular workbench.
+			isSessionsWindow: false,
 		};
 
 		// New window
