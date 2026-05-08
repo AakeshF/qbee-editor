@@ -155,6 +155,14 @@ class QBeeChatView extends ViewPane {
 			(message: object) => { webview.postMessage(message); },
 		));
 
+		// Push editor state (active file, selection, open tabs) into the SPA so the
+		// chat/agent know what the user is looking at without typing @file: mentions.
+		const editorContextBridge = this._register(this.instantiationService.createInstance(
+			EditorContextBridge,
+			(message: object) => { webview.postMessage(message); },
+			workspaceRoot,
+		));
+
 		this._register(webview.onMessage(async (e) => {
 			const msg = e.message as { type?: string };
 			if (!msg) {
@@ -165,19 +173,19 @@ class QBeeChatView extends ViewPane {
 				webview.postMessage(response);
 				return;
 			}
+			// SPA mounted and listening — re-push current editor state. Without
+			// this, the bridge's startup push races against the iframe's listener
+			// installation; the SPA misses the initial state and the chat thinks
+			// nothing's open until the user changes files.
+			if (msg.type === 'qbee_spa_ready') {
+				editorContextBridge.pushNow();
+				return;
+			}
 			// Settings bridge handles get_setting / set_setting.
 			if (await settingsBridge.handle(msg)) {
 				return;
 			}
 		}));
-
-		// Push editor state (active file, selection, open tabs) into the SPA so the
-		// chat/agent know what the user is looking at without typing @file: mentions.
-		this._register(this.instantiationService.createInstance(
-			EditorContextBridge,
-			(message: object) => { webview.postMessage(message); },
-			workspaceRoot,
-		));
 
 		webview.mountTo(container, getWindow(container));
 	}

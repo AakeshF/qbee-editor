@@ -230,8 +230,13 @@ class ChatLifecycleHandler extends Disposable {
 	}
 }
 
-registerAction2(OpenWorkspaceInAgentsWindowAction);
-registerAction2(OpenAgentsWindowAction);
+// QBee fork: 'Open in Agents Window' and 'Open Agents Window' actions
+// register a button next to the sidebar icons in the title bar that opens
+// the upstream Microsoft Agent Sessions Window. That window is hard-disabled
+// in QBee (see windowsMainService.ts:isSessionsWindow=false) but we don't
+// want the dead button cluttering the chrome either.
+// registerAction2(OpenWorkspaceInAgentsWindowAction);
+// registerAction2(OpenAgentsWindowAction);
 registerAction2(StartVoiceChatAction);
 
 registerAction2(VoiceChatInChatViewAction);
@@ -256,7 +261,8 @@ registerWorkbenchContribution2(ChatSuspendThrottlingHandler.ID, ChatSuspendThrot
 registerWorkbenchContribution2(ChatLifecycleHandler.ID, ChatLifecycleHandler, WorkbenchPhase.AfterRestored);
 registerWorkbenchContribution2(AgentHostContribution.ID, AgentHostContribution, WorkbenchPhase.AfterRestored);
 registerWorkbenchContribution2(AgentHostTerminalContribution.ID, AgentHostTerminalContribution, WorkbenchPhase.AfterRestored);
-registerWorkbenchContribution2(OpenWorkspaceInAgentsContribution.ID, OpenWorkspaceInAgentsContribution, WorkbenchPhase.BlockRestore);
+// QBee: see comment above on OpenWorkspaceInAgentsWindowAction.
+// registerWorkbenchContribution2(OpenWorkspaceInAgentsContribution.ID, OpenWorkspaceInAgentsContribution, WorkbenchPhase.BlockRestore);
 
 // How long to wait for the agent host to surface an AgentInfo before
 // throwing an error. Long enough for normal startup, short enough to avoid

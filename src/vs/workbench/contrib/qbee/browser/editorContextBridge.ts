@@ -31,6 +31,13 @@ const OPEN_FILES_MAX = 50;
  * SPA via webview postMessage on every relevant change. The SPA forwards it as
  * `editorContext` on /api/chat and /api/agent/run requests so the model knows
  * what the user is looking at.
+ *
+ * Initial-push race: when QBeeChatView mounts, we instantiate the bridge and
+ * push state immediately. But the SPA iframe inside the webview hasn't loaded
+ * its listener yet. Instead of guessing the timing, the SPA sends
+ * `{ type: 'qbee_spa_ready' }` after mount and we re-push then. The
+ * pushNow() method is exposed publicly so qbee.contribution can call it
+ * from the message handler.
  */
 export class EditorContextBridge extends Disposable {
 
@@ -54,6 +61,11 @@ export class EditorContextBridge extends Disposable {
 
 		this.rebindSelectionListener();
 		this.scheduleImmediatePush();
+	}
+
+	/** Force an immediate state push. Called by qbee.contribution when the SPA reports ready. */
+	pushNow(): void {
+		this.push();
 	}
 
 	override dispose(): void {
